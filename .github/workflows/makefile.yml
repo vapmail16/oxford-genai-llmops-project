@@ -18,9 +18,11 @@ jobs:
       #run: ./configure
 
     - name: Install dependencies
+      working-directory: ./rag-app
       run: make install
 
     - name: Run tests
+      working-directory: ./rag-app
       run: make test
 
     #- name: Run distcheck
