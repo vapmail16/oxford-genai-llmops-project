@@ -16,6 +16,8 @@ jobs:
 
     #- name: configure
       #run: ./configure
+    - name: Install base dep's
+      run: pip3 install -r requirements.txt
 
     - name: Install dependencies
       working-directory: ./rag-app
