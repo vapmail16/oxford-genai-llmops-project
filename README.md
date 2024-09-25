@@ -1,2 +1,4 @@
 # oxford-genai-capstone
-Oxford GenAI Course Capstone project
+Oxford GenAI Course Capstone project.
+
+
