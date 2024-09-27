@@ -24,7 +24,10 @@
 				"ms-toolsai.jupyter"
 			]
 		}
-	}
+	},
+	"mounts": [
+  "source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached"
+]
 
 	// Configure tool-specific properties.
 	// "customizations": {},

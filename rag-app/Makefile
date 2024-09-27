@@ -24,3 +24,7 @@ test:
 # Clean up build artifacts (if any)
 clean:
 	find . -type f -name '*.pyc' -delete
+
+# Build the postgres db - don't run inside the devctontainer ...
+build-db:
+	 docker compose --env-file .env -f deploy/docker/postgres/docker-compose.yaml up --build
