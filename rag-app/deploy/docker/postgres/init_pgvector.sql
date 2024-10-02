@@ -5,7 +5,8 @@ CREATE TABLE papers (
     id SERIAL PRIMARY KEY,
     title TEXT NOT NULL,
     summary TEXT NOT NULL,
-    embedding vector(384)  -- Adjust the dimension according to your embedding mode, here we are using all-miniLM-L6-v2
+    chunk TEXT NOT NULL,
+    embedding vector(384)  -- Adjust to match the embedding dimension (384 for all-MiniLM-L6-v2)
 );
 
 /*

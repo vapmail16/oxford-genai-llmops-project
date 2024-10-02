@@ -28,3 +28,7 @@ clean:
 # Build the postgres db - don't run inside the devctontainer ...
 build-db:
 	 docker compose --env-file .env -f deploy/docker/postgres/docker-compose.yaml up --build
+
+remove-db:
+	docker compose --env-file .env -f deploy/docker/postgres/docker-compose.yaml down
+	rm -rf deploy/docker/postgres/data
