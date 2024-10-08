@@ -122,4 +122,6 @@ def run_pipeline(json_dir: str, chunk_size: int = 512, overlap: int = 50):
 
 if __name__ == "__main__":
     # Example: Run the pipeline with a query
+    print(f'''Reading JSON files from {DATA_PATH}...''')
     run_pipeline(json_dir=DATA_PATH)
+    print(f'''Completed ingestion into database {db_config['dbname']}''')

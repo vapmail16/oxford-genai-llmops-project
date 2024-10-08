@@ -7,13 +7,14 @@ For development purposes this will run on localhost:8000
 
 # server/src/main.py
 from fastapi import FastAPI
-from controllers import retrieval, health_check
+from controllers import retrieval, health_check, generation
 
 app = FastAPI()
 
 # Include routers
 app.include_router(retrieval.router)
 app.include_router(health_check.router)
+app.incldue_router(generation.router)
 
 @app.get("/")
 async def read_root():

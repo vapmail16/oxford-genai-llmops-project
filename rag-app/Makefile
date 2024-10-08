@@ -9,6 +9,12 @@ install:
 run:
 	poetry run bash -c 'PYTHONPATH=$(SERVER_DIR)/src uvicorn server.src.main:app --reload'
 
+run-ingestion-and-build-db: build-db
+	poetry run python $(SERVER_DIR)/src/ingestion/pipeline.py
+
+run-ingestion:
+	poetry run python $(SERVER_DIR)/src/ingestion/pipeline.py
+
 # Lint the project (using Ruff)
 lint:
 	poetry run ruff $(SERVER_DIR)
@@ -25,7 +31,7 @@ test:
 clean:
 	find . -type f -name '*.pyc' -delete
 
-# Build the postgres db - don't run inside the devctontainer ...
+# Build the postgres db - don't run inside the devctontainer ... TODO: build logic to check if I'm in devcontainer.
 build-db:
 	 docker compose --env-file .env -f deploy/docker/postgres/docker-compose.yaml up --build
 
