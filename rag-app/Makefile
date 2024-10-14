@@ -12,6 +12,12 @@ run:
 run-ingestion-and-build-db: build-db
 	poetry run python $(SERVER_DIR)/src/ingestion/pipeline.py
 
+# Download the paper metadata from arixv using the public API.
+download:
+	poetry run python $(SERVER_DIR)/src/ingestion/arxiv_client.py
+
+# Note that the below is ingestion of the downloaded jsons, not downloading of arxiv data.
+# Note that this will trigger a download of hugging face embedding models if not already cached. TODO: replace with Bedrock.
 run-ingestion:
 	poetry run python $(SERVER_DIR)/src/ingestion/pipeline.py
 
@@ -25,7 +31,7 @@ format:
 
 # Run tests
 test:
-	poetry run pytest
+	poetry run pytest $(SERVER_DIR)
 
 # Clean up build artifacts (if any)
 clean:

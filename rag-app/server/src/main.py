@@ -14,7 +14,7 @@ app = FastAPI()
 # Include routers
 app.include_router(retrieval.router)
 app.include_router(health_check.router)
-app.incldue_router(generation.router)
+app.include_router(generation.router)
 
 @app.get("/")
 async def read_root():
