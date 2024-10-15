@@ -1,3 +1,4 @@
+# TODO: verify this works as eexprcted with some test cases
 DELETE FROM papers
 WHERE
     id in (
@@ -8,9 +9,11 @@ WHERE
                 SELECT
                     id,
                     title,
+										chunk,
                     row_number() OVER (
                         PARTITION BY
                             title,
+														chunk,
                             embedding
                         ORDER BY
                             id
