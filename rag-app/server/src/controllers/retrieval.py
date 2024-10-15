@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Query
 from typing import List
-from services.retrieval_service import retrieve_top_k_documents
+from services.retrieval_service import retrieve_top_k_chunks
 from models.document import Document, RetrievedDocument
 from dotenv import load_dotenv
 import os
