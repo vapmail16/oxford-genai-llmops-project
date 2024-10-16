@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Query
 from typing import List
-from services.retrieval_service import retrieve_top_k_documents
+from services.retrieval_service import retrieve_top_k_chunks
 from models.document import Document, RetrievedDocument
 from dotenv import load_dotenv
 import os
@@ -21,23 +21,23 @@ db_config = {
 router = APIRouter()
 
 @router.get("/retrieve", response_model=List[RetrievedDocument])
-async def retrieve_top_k_documents_endpoint(
+async def retrieve_top_k_chunks_endpoint(
     query: str = Query(..., description="The query text from the user"),
-    top_k: int = Query(5, description="Number of top documents to retrieve (default is 5)")
+    top_k: int = Query(5, description="Number of top chunks to retrieve (default is 5)")
 ):
     """
-    Retrieve the top K relevant documents based on a query.
+    Retrieve the top K relevant chunks based on a query.
     
     Args:
         query (str): The query text from the user.
         top_k (int): Number of top documents to retrieve (default is 5).
         
     Returns:
-        List[Document]: A list of the top retrieved documents.
+        List[Document]: A list of the top retrieved chunks.
     """
     try:
         # TODO: Tried using await but retrieve top k is not async, can try adapting to use asyncpg in future.
-        documents =  retrieve_top_k_documents(query, top_k, db_config=db_config)
+        chunks =  retrieve_top_k_chunks(query, top_k, db_config=db_config)
         if not documents:
             raise HTTPException(status_code=404, detail="No documents found.")
         return documents

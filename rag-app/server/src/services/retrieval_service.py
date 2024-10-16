@@ -21,7 +21,7 @@ def get_db_connection(db_config: dict):
     """
     return psycopg2.connect(**db_config)
 
-def retrieve_top_k_documents(query: str, top_k: int, db_config: dict) -> List[Dict]:
+def retrieve_top_k_chunks(query: str, top_k: int, db_config: dict) -> List[Dict]:
     """
     Retrieves the top_k documents based on cosine similarity to the query embedding using pgvector.
     
@@ -42,9 +42,9 @@ def retrieve_top_k_documents(query: str, top_k: int, db_config: dict) -> List[Di
     try:
         cursor = conn.cursor()
         
-        # SQL query to find the top_k documents using cosine similarity
+        # SQL query to find the top_k chunks using cosine similarity
         query = """
-        SELECT id, title, summary, embedding <=> %s::vector AS similarity
+        SELECT id, title, chunk, embedding <=> %s::vector AS similarity
         FROM papers
         ORDER BY similarity ASC
         LIMIT %s;
@@ -59,7 +59,7 @@ def retrieve_top_k_documents(query: str, top_k: int, db_config: dict) -> List[Di
             {
                 "id": row[0],
                 "title": row[1],
-                "summary": row[2],
+                "chunk": row[2],
                 "similarity_score": row[3]
             }
             for row in rows
