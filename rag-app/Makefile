@@ -31,7 +31,7 @@ format:
 
 # Run tests
 test:
-	poetry run pytest $(SERVER_DIR)
+	poetry run pytest
 
 # Clean up build artifacts (if any)
 clean:

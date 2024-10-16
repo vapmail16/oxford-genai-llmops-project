@@ -25,7 +25,7 @@ async def test_retrieve_top_k_documents():
 
     # Call the function
     try:
-        documents = await retrieve_top_k_documents(query, top_k, db_config)
+        documents = retrieve_top_k_documents(query, top_k, db_config)
 
         # Assertions
         assert isinstance(documents, list)
@@ -38,3 +38,6 @@ async def test_retrieve_top_k_documents():
             assert "similarity_score" in doc
     except Exception as e:
         pytest.fail(f"Test failed with error: {str(e)}")
+        
+def test_basic():
+    pass
