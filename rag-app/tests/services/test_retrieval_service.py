@@ -5,18 +5,18 @@ import os
 
 load_dotenv()
 
-DATA_PATH = os.getenv('DATA_PATH')
+DATA_PATH = os.getenv("DATA_PATH")
 
 # Database connection configuration
 db_config = {
-    "dbname": os.environ.get("POSTGRES_DB"), 
+    "dbname": os.environ.get("POSTGRES_DB"),
     "user": os.environ.get("POSTGRES_USER"),
     "password": os.environ.get("POSTGRES_PASSWORD"),
     "host": os.environ.get("POSTGRES_HOST"),
-    "port": os.environ.get("POSTGRES_PORT")
+    "port": os.environ.get("POSTGRES_PORT"),
 }
 
-# Test function for the retrieval service
+# Test function for the retrieval service - your postgres instance needs to be running.
 @pytest.mark.asyncio
 async def test_retrieve_top_k_documents():
     # Mock query and top_k value
@@ -38,6 +38,3 @@ async def test_retrieve_top_k_documents():
             assert "similarity_score" in doc
     except Exception as e:
         pytest.fail(f"Test failed with error: {str(e)}")
-        
-def test_basic():
-    pass
