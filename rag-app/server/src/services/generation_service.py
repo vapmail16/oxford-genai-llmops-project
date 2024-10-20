@@ -2,6 +2,8 @@ import boto3
 import os
 from typing import List
 from models.document import RetrievedDocument  # Import the Pydantic model
+from server.src.config import Settings
+from fastapi import Depends
 
 # Initialize the Bedrock client
 def get_bedrock_client():
@@ -13,10 +15,23 @@ def get_bedrock_client():
         region_name=os.environ.get("AWS_REGION", "us-east-1"),
     )
 
-async def generate_response(query: str, documents: List[RetrievedDocument], max_tokens: int = 200, temperature: float = 0.7) -> str:
+
+def get_llm_client(settings=Depends(get_settings)):
+    """
+    Initiatlise and return client for given LLM provider.
+    """
+    return None
+
+
+async def generate_response(
+    query: str,
+    documents: List[RetrievedDocument],
+    max_tokens: int = 200,
+    temperature: float = 0.7,
+) -> str:
     """
     Generate a response using Amazon Bedrock based on the query and retrieved documents.
-    
+
     Args:
         query (str): The user query.
         documents (List[RetrievedDocument]): The list of documents retrieved from the retrieval service.
@@ -42,12 +57,12 @@ async def generate_response(query: str, documents: List[RetrievedDocument], max_
             body={
                 "input": prompt,
                 "max_tokens": max_tokens,
-                "temperature": temperature
-            }
+                "temperature": temperature,
+            },
         )
-        
+
         # Retrieve and return the generated text
-        result = response['body']['generated_text']
+        result = response["body"]["generated_text"]
         return result
 
     except Exception as e:
