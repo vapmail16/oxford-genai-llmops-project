@@ -1,5 +1,7 @@
 # Define directories
 SERVER_DIR=./server
+# Generator model
+GENERATOR_MODEL=tinyllama#llama3.1:8b
 
 # Install dependencies
 install:
@@ -9,9 +11,11 @@ install:
 run-app:
 	poetry run bash -c 'PYTHONPATH=$(SERVER_DIR)/src uvicorn server.src.main:app --reload'
 
-# Haven't tested this.
-run-ingestion-and-build-db: build-db
-	poetry run python $(SERVER_DIR)/src/ingestion/pipeline.py
+# After a test this doesn't work outside the container, you need to build postgres first and then
+# run the ingestion seperately just now.
+# TODO: allow for build and ingestion outside the container in one command.
+#run-ingestion-and-build-db: build-db
+#	poetry run python $(SERVER_DIR)/src/ingestion/pipeline.py
 
 # Download the paper metadata from arixv using the public API.
 download-data:
@@ -37,6 +41,20 @@ test:
 # Clean up build artifacts (if any)
 clean:
 	find . -type f -name '*.pyc' -delete
+
+# Note: as things stand I need to run build-ollama and build-db outside the dev container.
+# I then need to run other commands inside the dev container (such as run-ingestion).
+# TODO: Fix this.
+# Current run order is:
+# 1. build-ollama (outside devcontainer)
+# 2. build-db (outside devcontainer)
+# 3. run-ingest (inside devcontainer)
+# 4. run-app (inside devcontainer)
+
+# Build Ollama server
+build-ollama:
+	docker run -d -v ollama:/root/.ollama -p 11434:11434 --memory="5g" --name ollama ollama/ollama
+	docker exec -it ollama ollama run $(GENERATOR_MODEL)
 
 # Build the postgres db - don't run inside the devctontainer ... TODO: build logic to check if I'm in devcontainer.
 build-db:
