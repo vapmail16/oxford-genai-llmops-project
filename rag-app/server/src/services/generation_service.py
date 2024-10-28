@@ -9,7 +9,7 @@ import json
 
 url = "http://localhost:11434/api/generate"
 headers = {"Content-Type": "application/json"}
-prompt_data = {"model": "llama3.1", "stream": False}
+prompt_data = {"model": "tinyllama", "stream": False}
 
 
 async def generate_response(

@@ -1,0 +1,14 @@
+version: "3" #TODO: Update this/check what I should set to.
+
+services:
+  ollama:
+    container_name: ollama_cat
+    image: ollama/ollama:latest
+    volumes:
+      - ./ollama:/root/.ollama
+    expose:
+      - 11434
+    deploy:
+      resources:
+        limits:
+          memory: 1024M
