@@ -6,10 +6,21 @@ from server.src.config import Settings
 from fastapi import Depends
 import requests
 import json
+from config import settings
+from tracely import init_tracing
+from tracely import trace_event
 
-url = "http://localhost:11434/api/generate"
+# TODO find a better place for these to live!
 headers = {"Content-Type": "application/json"}
-prompt_data = {"model": "tinyllama", "stream": False}
+prompt_data = {"model": settings.ollama_model, "stream": settings.ollama_streaming}
+
+# Initialize Evidently tracing
+init_tracing(
+    address=settings.evidently_address,
+    api_key=settings.evidently_api_key,
+    team_id=settings.evidently_team_id,
+    export_name=settings.evidently_dataset_name,
+)
 
 
 async def generate_response(
@@ -38,8 +49,10 @@ async def generate_response(
     context = "\n".join([chunk["chunk"] for chunk in chunks])
     prompt = QUERY_PROMPT.format(context=context, query=query)
     prompt_data["prompt"] = prompt
-    # print(prompt_data)
-    response = requests.post(url, headers=headers, data=json.dumps(prompt_data))
+
+    response = requests.post(
+        url=settings.ollama_api_url, headers=headers, data=json.dumps(prompt_data)
+    )
     if response.status_code == 200:
         print("Succesfully generated response")
         response_text = response.text

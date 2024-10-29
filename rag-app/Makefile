@@ -56,6 +56,11 @@ build-ollama:
 	docker run -d -v ollama:/root/.ollama -p 11434:11434 --memory="5g" --name ollama ollama/ollama
 	docker exec -it ollama ollama run $(GENERATOR_MODEL)
 
+# Remove Ollama server
+remove-ollama:
+	docker stop /ollama
+	docker rm /ollama
+
 # Build the postgres db - don't run inside the devctontainer ... TODO: build logic to check if I'm in devcontainer.
 build-db:
 	 docker compose --env-file .env -f deploy/docker/postgres/docker-compose.yaml up --build
