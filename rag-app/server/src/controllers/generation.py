@@ -59,7 +59,7 @@ async def generate_answer_endpoint(
         generated_response = await generate_response(
             query, chunks, max_tokens, temperature
         )  # is this sync?
-        return {"response": generated_response}
+        return generated_response  # {"response": generated_response}
 
     except Exception as e:
         raise HTTPException(

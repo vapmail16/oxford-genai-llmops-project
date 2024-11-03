@@ -48,7 +48,7 @@ clean:
 # Current run order is:
 # 1. build-ollama (outside devcontainer)
 # 2. build-db (outside devcontainer)
-# 3. run-ingest (inside devcontainer)
+# 3. run-ingestion (inside devcontainer)
 # 4. run-app (inside devcontainer)
 
 # Build Ollama server

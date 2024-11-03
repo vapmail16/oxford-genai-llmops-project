@@ -7,12 +7,10 @@ from fastapi import Depends
 import requests
 import json
 from config import settings
+
+# EVIDENTLY TRACING - TESTING
 from tracely import init_tracing
 from tracely import trace_event
-
-# TODO find a better place for these to live!
-headers = {"Content-Type": "application/json"}
-prompt_data = {"model": settings.ollama_model, "stream": settings.ollama_streaming}
 
 # Initialize Evidently tracing
 init_tracing(
@@ -22,13 +20,47 @@ init_tracing(
     export_name=settings.evidently_dataset_name,
 )
 
+# # TRULENS TRACING - TESTING
+# from trulens.apps.basic import TruBasicApp
+# from trulens.apps.custom import instrument
+
+
+@trace_event()  # TODO: Add timings to understand if this is a bottleneck - I think it is!
+# @instrument
+def call_llm(prompt):
+    # TODO find a better place for these to live!
+    headers = {"Content-Type": "application/json"}
+    prompt_data = {
+        "model": settings.ollama_model,
+        "stream": settings.ollama_streaming,
+        "prompt": prompt,
+    }
+    response = requests.post(
+        url=settings.ollama_api_url, headers=headers, data=json.dumps(prompt_data)
+    )
+    if response.status_code == 200:
+        print("Succesfully generated response")
+        response_text = response.text
+        data = json.loads(response_text)
+        data["response_tokens_per_second"] = (
+            data["eval_count"] / data["eval_duration"] * 10**9
+        )  # https://github.com/ollama/ollama/blob/main/docs/api.md
+        data.pop("context")  # don't want to store context yet ...
+        return data
+        # actual_response = data["response"]
+        # print(actual_response)
+        # return actual_response
+    else:
+        print(f"Error hitting Ollama: {response.status_code} - {response.text}")
+        return None  # TODO: error handling
+
 
 async def generate_response(
     query: str,
     chunks: List[Dict],
     max_tokens: int = 200,
     temperature: float = 0.7,
-) -> str:
+) -> Dict:  # str:
     """
     Generate a response using an Ollama endpoint running locally, t
     his will be changed to allow for Bedrock later.
@@ -48,21 +80,12 @@ async def generate_response(
     # Concatenate documents' summaries as the context for generation
     context = "\n".join([chunk["chunk"] for chunk in chunks])
     prompt = QUERY_PROMPT.format(context=context, query=query)
-    prompt_data["prompt"] = prompt
+    # prompt_data["prompt"] = prompt
 
-    response = requests.post(
-        url=settings.ollama_api_url, headers=headers, data=json.dumps(prompt_data)
-    )
-    if response.status_code == 200:
-        print("Succesfully generated response")
-        response_text = response.text
-        data = json.loads(response_text)
-        actual_response = data["response"]
-        print(actual_response)
-        return actual_response
-    else:
-        print(f"Error hitting Ollama: {response.status_code} - {response.text}")
-        return None  # TODO: error handling
+    # Let's try this.
+    # trace_event()
+    response = call_llm(prompt)
+    return response  # now this is a dict.
 
 
 # # Initialize the Bedrock client
