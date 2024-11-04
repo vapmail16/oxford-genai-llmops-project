@@ -28,6 +28,7 @@ init_tracing(
 )
 
 
+# TODO: move all this model config to config files!
 @router.get("/generate")
 async def generate_answer_endpoint(
     query: str = Query(..., description="The query text from the user"),
