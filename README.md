@@ -1,4 +1,4 @@
-# oxford-genai-capstone
+# _Artificial Intelligence: Generative AI, Cloud and MLOps (online), University of Oxford_: Capstone Project
 ## Introduction and Background
 Oxford GenAI Course Capstone project. The aim of this project is to help students understand some of the key concerns and process flows required for AI engineering.
 
