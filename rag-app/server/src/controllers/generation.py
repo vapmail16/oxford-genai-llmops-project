@@ -2,11 +2,11 @@ from fastapi import APIRouter, HTTPException, Query
 from typing import List
 from services.generation_service import generate_response
 from services.retrieval_service import retrieve_top_k_chunks
+from services.query_expansion_service import expand_query
 from models.document import RetrievedDocument
 import os
-from tracely import init_tracing
-from tracely import trace_event
 from config import settings
+import opik
 
 router = APIRouter()
 
@@ -19,16 +19,8 @@ db_config = {
     "port": os.environ.get("POSTGRES_PORT"),
 }
 
-# Initialize Evidently tracing
-init_tracing(
-    address=settings.evidently_address,
-    api_key=settings.evidently_api_key,
-    team_id=settings.evidently_team_id,
-    export_name=settings.evidently_dataset_name,
-)
-
-
 # TODO: move all this model config to config files!
+@opik.track
 @router.get("/generate")
 async def generate_answer_endpoint(
     query: str = Query(..., description="The query text from the user"),
@@ -50,7 +42,15 @@ async def generate_answer_endpoint(
     Returns:
         str: The generated answer based on the query and retrieved chunks.
     """
+
     try:
+        query_expansion = False
+        query = expand_query(query)
+        if not query:
+            raise HTTPException(status_code=400, detail="Query expansion failed.")
+        else:
+            query_expansion = True
+
         # Retrieve documents
         chunks = retrieve_top_k_chunks(query, top_k, db_config=db_config)
         if not chunks:
@@ -60,6 +60,7 @@ async def generate_answer_endpoint(
         generated_response = await generate_response(
             query, chunks, max_tokens, temperature
         )  # is this sync?
+        generated_response["query_expanded"] = query_expansion
         return generated_response  # {"response": generated_response}
 
     except Exception as e:

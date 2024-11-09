@@ -1,16 +1,16 @@
 import boto3
 import os
-from typing import List, Dict
-from models.document import RetrievedDocument  # Import the Pydantic model
+from typing import List, Dict, Union
+from server.src.models.document import RetrievedDocument  # Import the Pydantic model
 from server.src.config import Settings
 from fastapi import Depends
 import requests
 import json
-from config import settings
+from server.src.config import settings
 import opik
 
 # This should go somewhere better!
-opik.configure()
+# opik.configure()
 # EVIDENTLY TRACING - TESTING
 # from tracely import init_tracing
 # from tracely import trace_event
@@ -31,7 +31,7 @@ opik.configure()
 # @trace_event()  # Evidently AI - TODO: Add timings to understand if this is a bottleneck - I think it is!
 # @instrument # TruLens - TODO: Add timings to understand if this is a bottleneck - I think it is!
 @opik.track  # TODO: test if this works with async methods? I think it will.
-def call_llm(prompt):
+def call_llm(prompt: str) -> Union[Dict, None]:
     # TODO find a better place for these to live!
     headers = {"Content-Type": "application/json"}
     prompt_data = {
@@ -55,10 +55,11 @@ def call_llm(prompt):
         # print(actual_response)
         # return actual_response
     else:
-        print(f"Error hitting Ollama: {response.status_code} - {response.text}")
+        print(f"Error calling LLM: {response.status_code} - {response.text}")
         return None  # TODO: error handling
 
 
+@opik.track
 async def generate_response(
     query: str,
     chunks: List[Dict],
@@ -76,7 +77,7 @@ async def generate_response(
         temperature (float): Sampling temperature for the model.
     """
     QUERY_PROMPT = """
-    You are a helpful AI language assistant, please use the following context to answer the query.
+    You are a helpful AI language assistant, please use the following context to answer the query. Answer in English.
     Context: {context}
     Query: {query}
     Answer:

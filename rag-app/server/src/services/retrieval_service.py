@@ -5,6 +5,7 @@ This will perform naive rag retrieval for a given query using cosine similarity 
 import psycopg2
 from typing import List, Dict
 from sentence_transformers import SentenceTransformer
+import opik
 
 # Load a pre-trained Sentence Transformer model (e.g., 'all-MiniLM-L6-v2')
 model = SentenceTransformer("all-MiniLM-L6-v2")
@@ -23,6 +24,7 @@ def get_db_connection(db_config: dict):
     return psycopg2.connect(**db_config)
 
 
+@opik.track
 def retrieve_top_k_chunks(query: str, top_k: int, db_config: dict) -> List[Dict]:
     """
     Retrieves the top_k documents based on cosine similarity to the query embedding using pgvector.

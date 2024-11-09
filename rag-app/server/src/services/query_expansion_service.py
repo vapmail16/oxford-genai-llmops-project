@@ -1,7 +1,10 @@
 from server.src.services.generation_service import generate_response, call_llm
+from typing import Dict, Union
+import opik
 
 
-async def expand_query(query: str) -> str:
+@opik.track
+def expand_query(query: str) -> Union[str, None]:
     """
     Expands the query by generating a response using the OpenAI API.
 
@@ -19,4 +22,4 @@ async def expand_query(query: str) -> str:
 
     Query: {query}
     """
-    return await call_llm(expansion_prompt)
+    return call_llm(expansion_prompt)["response"]
