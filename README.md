@@ -72,6 +72,7 @@ This project will complement the background study material with guided hands on 
 8. Ollama - We will use the Ollama solution in order to run LLMs locally for development and testing of your application, before moving to cloud hosted Foundation Models.
 
 Other concepts which will be utilised in this project that are covered in the book in detail are:
+
 9. Testing - You will see how to write advanced tests for async functions, for data intensive functions and for AI workflows.
 10. Functional Programming (and more Python fundamentals) - This project is written in a functional style and will show you how to write code that is readable and maintainable even when not using Object Orientated Programming (OOP). The code will also show you how to write modular code that is easy to test, extend and adapt to multiple use cases.
 11. Config driven development - We'll show you can leverage strong configuration principles in order to reduce duplication and make your code more maintainable.
