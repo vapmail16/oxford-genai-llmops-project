@@ -23,7 +23,7 @@ Given the above description, AI engineering is necessarily concerned with AI sys
 Those who are aware of the disciplines of ML Engineering & Machine Learning Operations (MLOps) will see a lot of overlap in terms of these topics (with the exception of 3). This course module will help you build skills and knowledge in the area of AI engineering by building on a foundation of core MLOps practice and then extending these skills for the era of Foundation Models and Generative AI.
 
 ### Background Reading
-As part of this course you have all been provided with an e-copy of [Machine Learning Engineering with Python, 2nd Edition](https://www.packtpub.com/product/machine-learning-engineering-with-python-2nd-edition/9781801078031) by Andrew P. McMahon. We will use this book to develop our core skills in AI engineering before augmenting it with new material.
+As part of this course you have all been provided with an e-copy of [Machine Learning Engineering with Python, 2nd Edition](https://www.packtpub.com/product/machine-learning-engineering-with-python-2nd-edition/9781801078031) by [Andy McMahon](https://www.linkedin.com/in/andrew-p-mcmahon/). We will use this book to develop our core skills in AI engineering before augmenting it with new material.
 
 The book is fundamentally a book about machine learning engineering, which can be thought of as a precursor to AI engineering. Many of the core foundational concepts from ML engineering carry over into AI engineering.
 
