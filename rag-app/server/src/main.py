@@ -13,6 +13,8 @@ from controllers import retrieval, health_check, generation
 from server.src.config import Settings
 import os
 
+import opik
+
 app = FastAPI()
 
 # Include routers
@@ -33,6 +35,14 @@ app.include_router(generation.router)
 #         "debug": settings.debug,
 #         "database_url": settings.database_url,
 #     }
+
+
+@app.on_event("startup")
+async def startup_event():
+    """
+    Configure Comet's opik tracking once when the app starts.
+    """
+    opik.configure()
 
 
 @app.get("/")
