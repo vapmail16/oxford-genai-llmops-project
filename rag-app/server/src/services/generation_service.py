@@ -31,6 +31,7 @@ def call_llm(prompt: str) -> Union[Dict, None]:
         )  # https://github.com/ollama/ollama/blob/main/docs/api.md
         data.pop("context")  # don't want to store context yet ...
         return data
+        
     else:
         print(f"Error calling LLM: {response.status_code} - {response.text}")
         return None  # TODO: error handling
@@ -62,10 +63,6 @@ async def generate_response(
     # Concatenate documents' summaries as the context for generation
     context = "\n".join([chunk["chunk"] for chunk in chunks])
     prompt = QUERY_PROMPT.format(context=context, query=query)
-    # prompt_data["prompt"] = prompt
-
-    # Let's try this.
-    # trace_event()
     response = call_llm(prompt)
     return response  # now this is a dict.
 
