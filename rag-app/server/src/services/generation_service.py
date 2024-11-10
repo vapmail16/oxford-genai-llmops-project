@@ -9,27 +9,7 @@ import json
 from server.src.config import settings
 import opik
 
-# This should go somewhere better!
-# opik.configure()
-# EVIDENTLY TRACING - TESTING
-# from tracely import init_tracing
-# from tracely import trace_event
 
-# # Initialize Evidently tracing
-# init_tracing(
-#     address=settings.evidently_address,
-#     api_key=settings.evidently_api_key,
-#     team_id=settings.evidently_team_id,
-#     export_name=settings.evidently_dataset_name,
-# )
-
-# # TRULENS TRACING - TESTING
-# from trulens.apps.basic import TruBasicApp
-# from trulens.apps.custom import instrument
-
-
-# @trace_event()  # Evidently AI - TODO: Add timings to understand if this is a bottleneck - I think it is!
-# @instrument # TruLens - TODO: Add timings to understand if this is a bottleneck - I think it is!
 @opik.track  # TODO: test if this works with async methods? I think it will.
 def call_llm(prompt: str) -> Union[Dict, None]:
     # TODO find a better place for these to live!
