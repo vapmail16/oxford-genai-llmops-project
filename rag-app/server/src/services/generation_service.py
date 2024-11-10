@@ -31,9 +31,6 @@ def call_llm(prompt: str) -> Union[Dict, None]:
         )  # https://github.com/ollama/ollama/blob/main/docs/api.md
         data.pop("context")  # don't want to store context yet ...
         return data
-        # actual_response = data["response"]
-        # print(actual_response)
-        # return actual_response
     else:
         print(f"Error calling LLM: {response.status_code} - {response.text}")
         return None  # TODO: error handling
