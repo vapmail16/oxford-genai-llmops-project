@@ -224,6 +224,22 @@ make remove-ollama
 make remove-db
 ```
 
+### AWS
+1. First, sign up to get an AWS account if you don't already have one.
+2. Next, I suggest configuring a budget alert (for $1 a day is fine).
+3. Configure an IAM role in the AWS management console https://docs.aws.amazon.com/cli/v1/userguide/cli-configure-role.html:
+ 1. Select 'AWS Account' for the trusted entity.
+ 2. Select your own account.
+ 3. For permissions policies, add permission for full access to Bedrock, ElasticContainerRegistry, ECS, EC2, CloudWatch (v2), CloudFormation, AmazonS3, AWSLambdaBasicExecutionRole.
+ 4. I've called this role Bedrock-Dev-FullAccess-Role
+
+ ![alt text](assets/image.png)
+
+ 5. Create a user in the IAM centre, call it 'cli-access-user'
+
+
+https://community.aws/content/2b6vVO87SMvy1cY70GeinjH5ZX3/multimodal?lang=en
+https://github.com/suryakva/genai-titan-image-generator
 ### Deployment
 
 
