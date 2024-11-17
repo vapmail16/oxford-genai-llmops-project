@@ -1,4 +1,5 @@
 import boto3
+from botocore.exceptions import ClientError
 import os
 from typing import List, Dict, Union
 from server.src.models.document import RetrievedDocument  # Import the Pydantic model
@@ -31,10 +32,45 @@ def call_llm(prompt: str) -> Union[Dict, None]:
         )  # https://github.com/ollama/ollama/blob/main/docs/api.md
         data.pop("context")  # don't want to store context yet ...
         return data
-        
+
     else:
         print(f"Error calling LLM: {response.status_code} - {response.text}")
         return None  # TODO: error handling
+
+
+def call_bedrock(prompt: str) -> Union[Dict, None]:
+    # Create an Amazon Bedrock Runtime client. TODO: can this be a singleton?
+    brt = boto3.client("bedrock-runtime")
+    # Set the model ID, e.g., Amazon Titan Text G1 - Express.
+    model_id = settings.bedrock_model_id
+
+    # Start a conversation with the user message. TODO: Keep conversational context.
+    conversation = [
+        {
+            "role": "user",
+            "content": [{"text": prompt}],
+        }
+    ]
+
+    try:
+        # Send the message to the model, using a basic inference configuration.
+        response = brt.converse(
+            modelId=model_id,
+            messages=conversation,
+            inferenceConfig={
+                "maxTokens": settings.max_tokens,
+                "temperature": settings.temperature,
+                "topP": settings.top_p,
+            },
+        )
+
+        # Extract and print the response text.
+        response_text = response["output"]["message"]["content"][0]["text"]
+        print(response_text)
+
+    except (ClientError, Exception) as e:
+        print(f"ERROR: Can't invoke '{model_id}'. Reason: {e}")
+        exit(1)
 
 
 @opik.track

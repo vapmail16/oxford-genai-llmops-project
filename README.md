@@ -173,7 +173,7 @@ flowchart LR
     class H,I datastore;
 ```
 ## Usage
-The Makefile has been designed so that building and running the capplication and its components is as simple as possible.
+The Makefile has been designed so that building and running the application and its components is as simple as possible.
 
 To build the database:
 

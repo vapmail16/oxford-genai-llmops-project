@@ -7,42 +7,48 @@ For development purposes this will run on localhost:8000
 
 # server/src/main.py
 from fastapi import FastAPI, Depends
+from contextlib import asynccontextmanager
 from controllers import retrieval, health_check, generation
-
-# from server.src.config_loader import ConfigLoader
+from sentence_transformers import SentenceTransformer
 from server.src.config import Settings
-import os
-
 import opik
 
-app = FastAPI()
+# Async context manager to load in models I want to keep in memory for the app to use.
+@asynccontextmanager
+async def lifespan_context(app: FastAPI):
+    """
+    Lifespan context to manage the embedding model across the app.
+    """
+    print("Spinning up lifespan context...")
+
+    print("Configure opik...")
+    opik.configure()
+
+    print("Loading embedding model...")
+    embedding_model = SentenceTransformer("all-MiniLM-L6-v2")  # Load the model
+    try:
+        yield {
+            "embedding_model": embedding_model
+        }  # Pass the model as part of the app state
+    finally:
+        print("Cleaning up embedding model...")
+        del embedding_model  # Optionally clean up if necessary
+
+
+app = FastAPI(lifespan=lifespan_context)
 
 # Include routers
 app.include_router(retrieval.router)
 app.include_router(health_check.router)
 app.include_router(generation.router)
 
-# Define a fastAPI dependency provider
-# def get_settings():
-#     return Settings()
 
-
-# @app.get("/config")
-# async def get_config(settings: Settings = Depends(get_settings)):
-#     return {
-#         "environment": settings.environment,
-#         "app_name": settings.app_name,
-#         "debug": settings.debug,
-#         "database_url": settings.database_url,
-#     }
-
-
-@app.on_event("startup")
-async def startup_event():
-    """
-    Configure Comet's opik tracking once when the app starts.
-    """
-    opik.configure()
+# @app.on_event("startup")
+# async def startup_event():
+#     """
+#     Configure Comet's opik tracking once when the app starts.
+#     """
+#     opik.configure()
 
 
 @app.get("/")
