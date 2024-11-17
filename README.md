@@ -233,7 +233,7 @@ make remove-db
  3. For permissions policies, add permission for full access to Bedrock, ElasticContainerRegistry, ECS, EC2, CloudWatch (v2), CloudFormation, AmazonS3, AWSLambdaBasicExecutionRole.
  4. I've called this role Bedrock-Dev-FullAccess-Role
 
- ![alt text](assets/image.png)
+ ![alt text](assets/image-bedrock-role1.png)
 
  5. Create a user in the IAM centre, call it 'cli-access-user'
 
@@ -368,7 +368,12 @@ aws bedrock list-foundation-models --region <your-region>
 ```
 If this returns some json (it should be a rather large json) then we are done.
 
-**Step 6 [Optional]: Set up secrets management for production**
+**Step 6: Enable model access in AWS Management Console**
+Using the admin role for your account you should enable the models you want to use. At a minimum, you should enable the AWS Titan G1 - Express and Titan Text Embeddings V2 models for this RAG use case.
+
+![alt text](assets/image-bedrock-model-enable1.png)
+
+**Step 7 [Optional]: Set up secrets management for production**
 
 If you want to set up secrets management for production, you can use AWS Secrets Manager to store your API key and other sensitive information. This can be done using the AWS CLI or in a script.
 You can refer to the AWS documentation for more information on how to set up secrets management for production.
