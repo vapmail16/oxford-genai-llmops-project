@@ -240,6 +240,139 @@ make remove-db
 
 https://community.aws/content/2b6vVO87SMvy1cY70GeinjH5ZX3/multimodal?lang=en
 https://github.com/suryakva/genai-titan-image-generator
+
+#### Bedrock
+
+**Objective**: Set up access to AWS Bedrock, enabling you to call its APIs through the AWS CLI.
+
+**Step 1: Understand the Components**
+
+1. IAM (Identity and Access Management): This is how AWS controls “who can do what.”
+  * Users: Represent people (you or your students).
+  * Roles: Represent permissions you temporarily “assume” to access AWS services.
+  * Policies: Define “what actions” are allowed for users or roles.
+2. Why Roles for Bedrock?
+  * Roles are a secure way to give temporary access to AWS services (like Bedrock) without needing static credentials hardcoded anywhere.
+
+**Step 2: Set Up AWS CLI Credentials Locally**
+
+Before using AWS CLI, you need to authenticate with your AWS account:
+
+1. Log in to the AWS Console:
+  * Go to AWS Management Console.
+  * Log in as the root user (or an IAM user with admin privileges).
+2. Create an IAM User for Yourself (Best Practice):
+  * Navigate to IAM > Users > Add Users.
+  * Enter a username, e.g., AdminUser.
+	* Check Programmatic Access (for CLI use).
+	* Attach the policy AdministratorAccess (for simplicity during the course; tighten permissions later if desired).
+	* Finish and download the Access Key ID and Secret Access Key.
+3. Configure the AWS CLI:
+  * Open your terminal and run:
+  ```bash
+  aws configure
+  ```
+  Enter the following when prompted:
+  * AWS Access Key ID: Copy from the IAM user creation step.
+  * AWS Secret Access Key: Copy from the IAM user creation step.
+  * Default Region: Enter your preferred AWS region (e.g., us-east-1).
+  * Output Format: json.
+4. Test Your AWS CLI Configuration:
+  * Run the following command:
+  ```bash
+  aws sts get-caller-identity
+  ```
+  You should see a response like this:
+  ```
+  {
+  "User": {
+    "Arn": "arn:aws:sts::123456789012:user/AdminUser",
+    "UserId": "AIDEXAMPLEEXAMPLEEXAMPLE",
+    "UserName": "AdminUser"
+  },...
+  }
+  ```
+  This indicates that your AWS CLI is configured correctly.
+
+**Step 3: Create the role for Bedrock**
+
+1. Navigate to IAM > Roles > Add Roles.
+2. Enter a name for the role, e.g., Bedrock-Dev-FullAccess-Role.
+3. Enter an AWS Managed Policy ARN, e.g., arn:aws:iam::aws:policy/AdministratorAccess.
+4. Save the role.
+5. Attach the policy BedrockFullAccess (for simplicity during the course; tighten permissions later if desired).
+6. Copy the role ARN, e.g., arn:aws:iam::123456789012:role/Bedrock-Dev-FullAccess-Role.
+
+**Step 4: Configure the AWS CLI to Assume the Role**
+1. Create a Policy for Bedrock Access:
+  * Go to IAM > Policies > Create Policy.
+  * Choose the JSON tab and paste this policy:
+  ```json
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": [
+          "bedrock:InvokeModel",
+          "bedrock:ListFoundationModels",
+          "bedrock:ListCustomModels"
+        ],
+        "Resource": "*"
+      }
+    ]
+  }
+  ```
+  * Click Next and name the policy, e.g., BedrockAccessPolicy.
+  * Click Create.
+
+2. 	Create a Role:
+  * Go to IAM > Roles > Create Role.
+  * Select AWS Service and choose EC2 (or any service; we’ll explain this later for simplicity).
+  * Attach the BedrockAccessPolicy you created.
+  * Name the role, e.g., Bedrock-Dev-Access-Role.
+
+**Step 4: Assume the role for CLI use**
+Now we are going to assume the role and get temporary credentials.
+
+1. Run the following command to assume the newly created Bedrock-Dev-Access-Role (or substitute for whatever you have named it):
+```bash
+aws sts assume-role \
+    --role-arn arn:aws:iam::<your-account-id>:role/Bedrock-Dev-Access-Role \
+    --role-session-name CLI-Session
+```
+2. The output from the previous command will look something like:
+```bash
+{
+    "Credentials": {
+        "AccessKeyId": "AKIAIOSFODNN7EXAMPLE",
+        "SecretAccessKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+        "SessionToken": "AQoDYXdzEJzUvlyK...EXAMPLEKEY",
+        "Expiration": "2023-07-11T19:00:00Z"
+    }...
+}
+```
+  These are temporary credentials that you can use to access Bedrock.
+3. Use the returned credentials and export them as environment variables:
+```bash
+export AWS_ACCESS_KEY_ID=ASIA...
+export AWS_SECRET_ACCESS_KEY=wJalr...
+export AWS_SESSION_TOKEN=FQoGZXIvYXdz...
+```
+
+**Step 5: Confirm you can succesfully assume the role and access Bedrock**
+
+Run the following command to list the available models:
+```bash
+aws bedrock list-foundation-models --region <your-region>
+```
+If this returns some json (it should be a rather large json) then we are done.
+
+**Step 6 [Optional]: Set up secrets management for production**
+
+If you want to set up secrets management for production, you can use AWS Secrets Manager to store your API key and other sensitive information. This can be done using the AWS CLI or in a script.
+You can refer to the AWS documentation for more information on how to set up secrets management for production.
+
 ### Deployment
 
 
