@@ -29,10 +29,18 @@ class Settings(BaseSettings):
     evidently_dataset_name: str = Field(..., env="EVIDENTLY_DATASET_NAME")
     evidently_address: str = Field(..., env="EVIDENTLY_ADDRESS")
 
-    # LLM Service Config
+    # Ollama Config
     ollama_api_url: str = Field(..., env="OLLAMA_API_URL")
     ollama_model: str = Field(..., env="GENERATOR_MODEL")
     ollama_streaming: bool = Field(..., env="OLLAMA_STREAMING")
+
+    # Generation model config
+    temperature: str = Field(..., env="TEMPERATURE")
+    top_p: str = Field(..., env="TOP_P")
+    max_tokens: int = Field(..., env="MAX_TOKENS")
+
+    # Bedrock config
+    bedrock_model_id: str = Field(..., env="BEDROCK_MODEL_ID")
 
     # Comet config for Opik
     opik_api_key: str = Field(..., env="OPIK_API_KEY")

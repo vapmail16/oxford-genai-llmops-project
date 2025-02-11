@@ -8,7 +8,7 @@ from sentence_transformers import SentenceTransformer
 import opik
 
 # Load a pre-trained Sentence Transformer model (e.g., 'all-MiniLM-L6-v2')
-model = SentenceTransformer("all-MiniLM-L6-v2")
+# embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
 
 
 def get_db_connection(db_config: dict):
@@ -38,7 +38,10 @@ def retrieve_top_k_chunks(query: str, top_k: int, db_config: dict) -> List[Dict]
         List[Dict]: A list of dictionaries containing the top_k chunks with their titles and summaries.
     """
     # Generate the embedding for the query
-    query_embedding = model.encode(
+    embedding_model = (
+        app.state.embedding_model
+    )  # TODO: get reference to app state from Request...
+    query_embedding = embedding_model.encode(
         query, convert_to_tensor=False
     ).tolist()  # Need list converstion for pgvector to interpret correctly
 

@@ -58,6 +58,7 @@ To augment your learning from the lectures in the course, the following topics a
 
 This capstone project will build on some of the topics covered in the material above and provide a specific AI engineering bent to it. See details on the Project for more.
 
+### AI Engineering vs ML Engineering
 
 ## Project
 This project will complement the background study material with guided hands on work on the following topics:
@@ -79,7 +80,7 @@ Other concepts which will be utilised in this project that are covered in the bo
 
 
 ### Structure
-The repository has the folllowing tree structure:
+The repository has the following tree structure:
 
 ```
 ├── LICENSE
@@ -137,7 +138,6 @@ The repository has the folllowing tree structure:
 │   │       │   ├── generation_service.py
 │   │       │   └── retrieval_service.py
 │   │       └── settings.py
-│   ├── test.json
 │   └── tests
 │       └── services
 │           ├── __init__.py
@@ -173,7 +173,7 @@ flowchart LR
     class H,I datastore;
 ```
 ## Usage
-The Makefile has been designed so that building and running the capplication and its components is as simple as possible.
+The Makefile has been designed so that building and running the application and its components is as simple as possible.
 
 To build the database:
 
