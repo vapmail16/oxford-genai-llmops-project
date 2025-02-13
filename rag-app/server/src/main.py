@@ -24,6 +24,7 @@ async def lifespan_context(app: FastAPI):
     print("Configure opik...")
     opik.configure()
 
+    # Note below is not actually being passed around the app, needs work!
     print("Loading embedding model...")
     embedding_model = SentenceTransformer("all-MiniLM-L6-v2")  # Load the model
     try:

@@ -2,9 +2,9 @@ version: "3" #TODO: Update this/check what I should set to.
 
 services:
   postgres:
-    build: 
+    build:
       context: .
-      dockerfile: pgvector.Dockerfile
+      dockerfile: pgvector2.Dockerfile
     ports:
       - "${POSTGRES_PORT}:5432"
     volumes:

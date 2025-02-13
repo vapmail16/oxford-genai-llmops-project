@@ -1,3 +1,11 @@
+# Makefile
+# This makefile should be used to develop the app locally.
+# Current suggested run order is:
+#	1. install
+# 	1. build-db (outside devcontainer)
+# 	2. run-ingestion (inside devcontainer)
+# 	3. run-app (inside devcontainer)
+#   4. run-client (inside devcontainer)
 # Define directories
 SERVER_DIR=./server
 # Generator model
@@ -11,13 +19,19 @@ install:
 run-app:
 	poetry run bash -c 'PYTHONPATH=$(SERVER_DIR)/src uvicorn server.src.main:app --reload'
 
-# After a test this doesn't work outside the container, you need to build postgres first and then
-# run the ingestion seperately just now.
-# TODO: allow for build and ingestion outside the container in one command.
-#run-ingestion-and-build-db: build-db
-#	poetry run python $(SERVER_DIR)/src/ingestion/pipeline.py
+run-client:
+	poetry run streamlit run client/streamlit_app.py
 
-# Download the paper metadata from arixv using the public API.
+# Build the postgres db - don't run inside the devctontainer ... TODO: build logic to check if I'm in devcontainer.
+build-db:
+	 docker compose --env-file .env -f deploy/docker/postgres/docker-compose.yaml up --build
+
+# Bring down the postgres db and then remove the config data.
+remove-db:
+	docker compose --env-file .env -f deploy/docker/postgres/docker-compose.yaml down
+	rm -rf deploy/docker/postgres/data
+
+# Download the paper metadata from arxiv using the public API.
 download-data:
 	poetry run python $(SERVER_DIR)/src/ingestion/arxiv_client.py
 
@@ -42,6 +56,14 @@ test:
 clean:
 	find . -type f -name '*.pyc' -delete
 
+
+# After a test this doesn't work outside the container, you need to build postgres first and then
+# run the ingestion seperately just now.
+# TODO: allow for build and ingestion outside the container in one command.
+#run-ingestion-and-build-db: build-db
+#	poetry run python $(SERVER_DIR)/src/ingestion/pipeline.py
+
+
 # Note: as things stand I need to run build-ollama and build-db outside the dev container.
 # I then need to run other commands inside the dev container (such as run-ingestion).
 # TODO: Fix this.
@@ -51,23 +73,17 @@ clean:
 # 3. run-ingestion (inside devcontainer)
 # 4. run-app (inside devcontainer)
 
-# Build Ollama server
-build-ollama:
-	docker run -d -v ollama:/root/.ollama -p 11434:11434 --memory="5g" --name ollama ollama/ollama
-	docker exec -it ollama ollama run $(GENERATOR_MODEL)
+# Build Ollama server - refactor on 13/2/2025, not needed.
+# build-ollama:
+# 	docker run -d -v ollama:/root/.ollama -p 11434:11434 --memory="5g" --name ollama ollama/ollama
+# 	docker exec -it ollama ollama run $(GENERATOR_MODEL)
 
-# Remove Ollama server
-remove-ollama:
-	docker stop /ollama
-	docker rm /ollama
+# # Remove Ollama server
+# remove-ollama:
+# 	docker stop /ollama
+# 	docker rm /ollama
 
-# Build the postgres db - don't run inside the devctontainer ... TODO: build logic to check if I'm in devcontainer.
-build-db:
-	 docker compose --env-file .env -f deploy/docker/postgres/docker-compose.yaml up --build
 
-remove-db:
-	docker compose --env-file .env -f deploy/docker/postgres/docker-compose.yaml down
-	rm -rf deploy/docker/postgres/data
 
 # TODO: Fix the fact I need to build-db outside the dev container and then run other commands inside it.
 # deploy-local: donwload-data run-ingestion run-app

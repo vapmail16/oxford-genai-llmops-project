@@ -35,8 +35,8 @@ class Settings(BaseSettings):
     ollama_streaming: bool = Field(..., env="OLLAMA_STREAMING")
 
     # Generation model config
-    temperature: str = Field(..., env="TEMPERATURE")
-    top_p: str = Field(..., env="TOP_P")
+    temperature: float = Field(..., env="TEMPERATURE")
+    top_p: float = Field(..., env="TOP_P")
     max_tokens: int = Field(..., env="MAX_TOKENS")
 
     # Bedrock config
@@ -46,6 +46,10 @@ class Settings(BaseSettings):
     opik_api_key: str = Field(..., env="OPIK_API_KEY")
     opik_workspace: str = Field(..., env="OPIK_WORKSPACE")
     opik_project_name: str = Field(..., env="OPIK_PROJECT_NAME")
+
+    # OpenAI config
+    openai_model: str = Field(..., env="OPENAI_MODEL")
+    openai_api_key: str = Field(..., env="OPENAI_API_KEY")
 
     rag_config: dict = {}
 

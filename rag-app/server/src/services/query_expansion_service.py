@@ -22,4 +22,4 @@ def expand_query(query: str) -> Union[str, None]:
 
     Query: {query}
     """
-    return call_llm(expansion_prompt)["response"]
+    return call_llm(expansion_prompt)["response"].replace('"', "")
