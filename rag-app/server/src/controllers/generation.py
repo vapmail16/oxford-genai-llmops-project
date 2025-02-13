@@ -44,12 +44,13 @@ async def generate_answer_endpoint(
     """
 
     try:
-        query_expansion = False
-        query = expand_query(query)
-        if not query:
-            raise HTTPException(status_code=400, detail="Query expansion failed.")
-        else:
-            query_expansion = True
+        query_expanded = False
+        # query = expand_query(query)
+        # print(f"Expanded query is: {query} and of type {type(query)}")
+        # if not query:
+        #     raise HTTPException(status_code=400, detail="Query expansion failed.")
+        # else:
+        #     query_expanded = True
 
         # Retrieve documents
         chunks = retrieve_top_k_chunks(query, top_k, db_config=db_config)
@@ -60,7 +61,8 @@ async def generate_answer_endpoint(
         generated_response = await generate_response(
             query, chunks, max_tokens, temperature
         )  # is this sync?
-        generated_response["query_expanded"] = query_expansion
+        generated_response["query_expanded"] = query_expanded
+        print(f"Generated response {generated_response}")
         return generated_response  # {"response": generated_response}
 
     except Exception as e:

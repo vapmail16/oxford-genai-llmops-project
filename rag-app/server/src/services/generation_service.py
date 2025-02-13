@@ -9,32 +9,63 @@ import requests
 import json
 from server.src.config import settings
 import opik
+import openai
+from openai import OpenAI
+
+client = OpenAI()
+
+# @opik.track  # TODO: test if this works with async methods? I think it will.
+# def call_llm(prompt: str) -> Union[Dict, None]:
+#     # TODO find a better place for these to live!
+#     headers = {"Content-Type": "application/json"}
+#     prompt_data = {
+#         "model": settings.ollama_model,
+#         "stream": settings.ollama_streaming,
+#         "prompt": prompt,
+#     }
+#     response = requests.post(
+#         url=settings.ollama_api_url, headers=headers, data=json.dumps(prompt_data)
+#     )
+#     if response.status_code == 200:
+#         print("Succesfully generated response")
+#         response_text = response.text
+#         data = json.loads(response_text)
+#         data["response_tokens_per_second"] = (
+#             data["eval_count"] / data["eval_duration"] * 10**9
+#         )  # https://github.com/ollama/ollama/blob/main/docs/api.md
+#         data.pop("context")  # don't want to store context yet ...
+#         return data
+
+#     else:
+#         print(f"Error calling LLM: {response.status_code} - {response.text}")
+#         return None  # TODO: error handling
 
 
 @opik.track  # TODO: test if this works with async methods? I think it will.
 def call_llm(prompt: str) -> Union[Dict, None]:
-    # TODO find a better place for these to live!
-    headers = {"Content-Type": "application/json"}
-    prompt_data = {
-        "model": settings.ollama_model,
-        "stream": settings.ollama_streaming,
-        "prompt": prompt,
-    }
-    response = requests.post(
-        url=settings.ollama_api_url, headers=headers, data=json.dumps(prompt_data)
-    )
-    if response.status_code == 200:
-        print("Succesfully generated response")
-        response_text = response.text
-        data = json.loads(response_text)
+    """Call OpenAI's API to generate a response."""
+    try:
+        response = client.chat.completions.create(
+            model=settings.openai_model,  # Ensure this model is defined in settings
+            messages=[{"role": "user", "content": prompt}],
+            temperature=settings.temperature,
+            max_tokens=settings.max_tokens,
+            top_p=settings.top_p,
+        )
+
+        print("Successfully generated response")
+        data = {"response": response.choices[0].message.content}
         data["response_tokens_per_second"] = (
-            data["eval_count"] / data["eval_duration"] * 10**9
-        )  # https://github.com/ollama/ollama/blob/main/docs/api.md
-        data.pop("context")  # don't want to store context yet ...
+            (response.usage.total_tokens / response.usage.completion_tokens)
+            if hasattr(response, "usage")
+            else None
+        )
+        print(f"call_llm returning {data}")
+        print(f"data.response = {data['response']}")
         return data
 
-    else:
-        print(f"Error calling LLM: {response.status_code} - {response.text}")
+    except Exception as e:
+        print(f"Error calling OpenAI API: {e}")
         return None  # TODO: error handling
 
 
@@ -99,7 +130,9 @@ async def generate_response(
     # Concatenate documents' summaries as the context for generation
     context = "\n".join([chunk["chunk"] for chunk in chunks])
     prompt = QUERY_PROMPT.format(context=context, query=query)
+    print(f"calling call_llm ...")
     response = call_llm(prompt)
+    print(f"generate_response returning {response}")
     return response  # now this is a dict.
 
 
