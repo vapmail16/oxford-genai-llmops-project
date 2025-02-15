@@ -1,6 +1,6 @@
-# _Artificial Intelligence: Generative AI, Cloud and MLOps (online), University of Oxford_: Capstone Project
+# _Artificial Intelligence: Generative AI, Cloud and MLOps (online), University of Oxford_: LLMOps Project
 ## Introduction and Background
-Oxford GenAI Course Capstone project. The aim of this project is to help students understand some of the key concerns and process flows required for AI engineering.
+Oxford GenAI Course project. The aim of this project is to help students understand some of the key concerns and process flows required for AI engineering.
 
 ### What is AI engineering?
 For the purposes of this course we use the term ‘AI engineering’ to refer to:
@@ -27,7 +27,7 @@ As part of this course you have all been provided with an e-copy of [Machine Lea
 
 The book is fundamentally a book about machine learning engineering, which can be thought of as a precursor to AI engineering. Many of the core foundational concepts from ML engineering carry over into AI engineering.
 
-To augment your learning from the lectures in the course, the following topics are covered in the identified chapters in the book. I would suggest reading these and following some of the coding exercises within the book to prepare you for the capstone project (discussed in a later section):
+To augment your learning from the lectures in the course, the following topics are covered in the identified chapters in the book. I would suggest reading these and following some of the coding exercises within the book to prepare you for the  project (discussed in a later section):
 
 1. Software Engineering Best Practice:
   * The ML and AI Development Lifecycle [Chapter 2.3]
@@ -56,7 +56,7 @@ To augment your learning from the lectures in the course, the following topics a
   * AI Application Patterns:
     * One-shot Q&A [Chapter 7.2]
 
-This capstone project will build on some of the topics covered in the material above and provide a specific AI engineering bent to it. See details on the Project for more.
+This  project will build on some of the topics covered in the material above and provide a specific AI engineering bent to it. See details on the Project for more.
 
 ### AI Engineering vs ML Engineering
 
