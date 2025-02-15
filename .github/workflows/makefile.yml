@@ -12,8 +12,16 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Do stuff...
-        run: echo "Stuff will be done!"
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10.8'
+
+      - name: test
+        run: pip install pytest && pytest
+
+
+  
 
     # steps:
     # - uses: actions/checkout@v4
