@@ -7,7 +7,7 @@ from typing import List, Dict
 from sentence_transformers import SentenceTransformer
 import opik
 
-# Load a pre-trained Sentence Transformer model (e.g., 'all-MiniLM-L6-v2')
+# Load a pre-trained Sentence Transformer model (e.g., 'all-MiniLM-L6-v2') - ideally retrieve this from app state ...
 embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
 
 

@@ -44,14 +44,6 @@ app.include_router(health_check.router)
 app.include_router(generation.router)
 
 
-# @app.on_event("startup")
-# async def startup_event():
-#     """
-#     Configure Comet's opik tracking once when the app starts.
-#     """
-#     opik.configure()
-
-
 @app.get("/")
 async def read_root():
     return {"message": "Welcome to the RAG app!"}
