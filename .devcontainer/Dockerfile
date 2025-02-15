@@ -19,4 +19,4 @@ COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
 
 # Final cleanup
-RUN rm -rf /var/lib/apt/lists/*
+RUN rm -rf /var/lib/apt/lists/*s
