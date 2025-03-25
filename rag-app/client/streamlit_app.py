@@ -4,13 +4,8 @@ import requests
 
 def query_fastapi(query, top_k=5, max_tokens=200, temperature=0.7):
     """Send a query to the FastAPI backend and return the response."""
-    url = "http://localhost:8000/generate"
-    params = {
-        "query": query,
-        "top_k": top_k,
-        "max_tokens": max_tokens,
-        "temperature": temperature,
-    }
+    url = "http://localhost:8000/retrieve"
+    params = {"query": query, "top_k": top_k}
     try:
         response = requests.get(url, params=params)
         response.raise_for_status()  # Raise an error for bad responses (4xx, 5xx)
@@ -46,7 +41,7 @@ if query:
     if "error" in response:
         answer = f"⚠️ Error: {response['error']}"
     else:
-        answer = response.get("answer", "No response from server.")
+        answer = "\n\n".join([doc["chunk"] for doc in response])
 
     # Display bot response
     with st.chat_message("assistant"):
