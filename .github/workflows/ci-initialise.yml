@@ -1,0 +1,32 @@
+name: Test GitHub Actions  
+
+on: 
+  push  # Run workflow on every push
+
+jobs:  
+  build:  
+    runs-on: ubuntu-latest  # Specify the OS to run the job on
+
+    steps:  # Steps inside this job
+      - name: Checkout repository  # Step 1 - Get the latest code
+        uses: actions/checkout@v3  # Uses a built-in GitHub Action
+
+      - name: Set up Python  # Step 2 - Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+
+      - name: Install dependencies  # ✅ Install pytest here
+        run: pip install pytest  
+
+      - name: Run a Python main script  # Step 3 - Execute Python code
+        env:
+            CI: "true"  # ✅ Fix: Set CI as a string
+        run: python3 basic_functions/basic_functions.py
+
+      - name: Run tests # Step 4 - Execute test Python code
+        env: 
+          PYTHONPATH: .
+        run: pytest basic_functions/test_basic_functions.py --import-mode=importlib -v
+          
